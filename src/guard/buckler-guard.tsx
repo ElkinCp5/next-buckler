@@ -1,14 +1,10 @@
-import React from 'react'
-import { BaseProps } from '../types/properties/base-props'
-import { AuthProps } from '../types/properties/auth-props'
-import { RBACProps } from '../types/properties/rbac-props'
-import { SingleProps } from '../types/properties/single-props'
+import React, { ReactNode } from 'react'
 
-export function BucklerGuard(props: BaseProps): JSX.Element
-export function BucklerGuard(props: AuthProps): JSX.Element
-export function BucklerGuard(props: RBACProps): JSX.Element
+export function BucklerGuard(props: BaseProps<ReactNode>): JSX.Element
+export function BucklerGuard(props: AuthProps<ReactNode>): JSX.Element
+export function BucklerGuard(props: RBACProps<ReactNode>): JSX.Element
 
-export function BucklerGuard(props: SingleProps) {
+export function BucklerGuard(props: SingleProps<ReactNode>): JSX.Element {
   const { showForRole, showIf, fallback = null, RBAC, userRoles, children } = props
 
   if (RBAC) return <>{showForRole === userRoles ? children : null}</>

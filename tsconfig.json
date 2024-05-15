@@ -1,5 +1,4 @@
 {
-  "include": ["src", "types"],
   "compilerOptions": {
     "module": "esnext",
     "lib": ["dom", "esnext"],
@@ -18,5 +17,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true
-  }
+  },
+  "include": ["src", "types", "src/dts/*.d.ts"]
 }
