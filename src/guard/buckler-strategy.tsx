@@ -3,17 +3,18 @@ import { verifyPath } from '../hooks/verify-path'
 import { getAccessRoute } from '../hooks/acces-route'
 import { getGrantedRoutes } from '../hooks/granted-route'
 import { BucklerProps } from '../types/buckler'
+
 /**
  * BucklerStrategy is a function that determines the strategy for rendering components based on authentication status,
  * route authorization, and loading state.
- * @template PrivateRoutesList The type representing private routes.
- * @template PublicRoutesList The type representing public routes.
+ * @template PrivateRoutes The type representing private routes.
+ * @template PublicRoutes The type representing public routes.
  * @param props The props passed to the BucklerStrategy function, including BucklerProps and children.
  * @returns The JSX element representing the rendered view based on the BucklerStrategy.
  */
 export function BucklerStrategy<
-  PrivateRoutesList extends string[],
-  PublicRoutesList extends string[]
+  PrivateRoutes extends string[],
+  PublicRoutes extends string[]
 >({
   isAuth,
   isLoading,
@@ -28,11 +29,7 @@ export function BucklerStrategy<
   RBAC,
   userRoles,
   children,
-}: BucklerProps<PrivateRoutesList, PublicRoutesList> & {
-  children: ReactNode
-}): JSX.Element {
-  let view = <>{children}</> // Initialize view with children
-
+}: BucklerProps<PrivateRoutes, PublicRoutes> & { children: ReactNode }): JSX.Element {
   // Check if the current path is private, public, or hybrid
   const pathIsPrivate = verifyPath(privateRoutes, pathname)
   const pathIsPublic = verifyPath(publicRoutes, pathname)
@@ -77,8 +74,8 @@ export function BucklerStrategy<
     loadingPathAuthHybrid ||
     loadingPathHybrid
   ) {
-    view = <>{LoadingComponent}</>
+    return <>{LoadingComponent}</>
   }
 
-  return view // Return the rendered view
+  return <>{children}</> // Return the rendered view
 }
