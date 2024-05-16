@@ -12,7 +12,7 @@ import type { NextRouter } from 'next/router'
 export type BucklerProps<
   PrivateRoutes extends string[],
   PublicRoutes extends string[]
-> = BucklerBase<
+> = BucklerMain<
   ReactNode,
   NextRouter,
   PrivateRoutes,
