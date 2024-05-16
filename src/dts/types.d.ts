@@ -1,4 +1,4 @@
-type Routes = string[];
+type TRoutes = string[];
 
 // Interface for Higher Order Component (HOC) with children prop
 declare interface HOC<ReactNode> {
@@ -35,7 +35,7 @@ declare interface AuthProps<ReactNode> extends HOC<ReactNode> {
 }
 
 // Defines access to routes based on user roles
-declare type RoleAccess<Routes extends string[]> = {
+declare type RoleAccess<Routes extends TRoutes> = {
   [index: string]: {
     grantedRoutes: Routes; // Routes accessible by the role
     accessRoute?: Routes[number]; // Access route for the role
@@ -43,12 +43,12 @@ declare type RoleAccess<Routes extends string[]> = {
 }
 
 // Defines the structure of a route with RBAC
-interface BucklerRoute<ReactNode, Next, Private extends Routes, Public extends Routes> {
+interface Buckler<ReactNode, Next, Private extends TRoutes, Public extends TRoutes> {
   isAuth: boolean; // Authentication flag
   isLoading: boolean; // Loading flag
   router: Next; // Router object
   loginRoute: Public[number]; // Route for login
-  accessRoute: Private[number]; // Route for accessing secured content
+  accessRoute?: Private[number]; // Route for accessing secured content
   defaultRoute: Public[number]; // Default route
   privateRoutes: Private; // Private routes
   publicRoutes: Public; // Public routes
@@ -59,31 +59,39 @@ interface BucklerRoute<ReactNode, Next, Private extends Routes, Public extends R
 }
 
 // Interface for routes with specific roles
-interface BucklerRouteRoles<
+interface BucklerRoles<
   ReactNode,
   Next,
-  Private extends Routes,
-  Public extends Routes
-> extends BucklerRoute<ReactNode, Next, Private, Public> {
-  accessRoute: never; // Access route is not applicable
+  Private extends TRoutes,
+  Public extends TRoutes
+> extends Buckler<ReactNode, Next, Private, Public> {
+  accessRoute?: never; // Access route is not applicable
   defaultRoute: string; // Default route
 }
 
 // Interface for routes without RBAC
-interface BucklerRouteNotRoles<
+interface BucklerNotRoles<
   ReactNode,
   Next,
-  Private extends Routes,
-  Public extends Routes
-> extends BucklerRoute<ReactNode, Next, Private, Public> {
+  Private extends TRoutes,
+  Public extends TRoutes
+> extends Buckler<ReactNode, Next, Private, Public> {
   RBAC: never; // No RBAC present
   userRoles: never; // No user roles present
 }
 
-// Defines the base structure for Buckler routes
-declare type BucklerBase<
+declare type RouteShield<
   ReactNode,
   Next,
   PrivateRoutes extends string[],
   PublicRoutes extends string[]
-> = BucklerRouteNotRoles<ReactNode, Next, PrivateRoutes, PublicRoutes> | BucklerRouteRoles<ReactNode, Next, PrivateRoutes, PublicRoutes>;
+> = BucklerNotRoles<ReactNode, Next, PrivateRoutes, PublicRoutes>
+  | BucklerRoles<ReactNode, Next, PrivateRoutes, PublicRoutes>
+
+// Defines the base structure for Buckler routes
+declare type BucklerMain<
+  ReactNode,
+  Next,
+  PrivateRoutes extends string[],
+  PublicRoutes extends string[]
+> = RouteShield<ReactNode, Next, PrivateRoutes, PublicRoutes>;
